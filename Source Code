@@ -1,1 +1,137 @@
 
+addEventListener('fetch', (event) => {
+  event.respondWith(handleRequest(event.request));
+});
+
+function generateRandomTrivia() {
+  const triviaData = {
+    question: 'What is the capital of France?',
+    correct_answer: 'Paris',
+    incorrect_answers: ['Berlin', 'Madrid', 'Rome'],
+  };
+  return triviaData;
+}
+
+function generateRandomJoke() {
+  const jokes = [
+    {
+      setup: 'Why did the chicken cross the road?',
+      punchline: 'To get to the other side.',
+    },
+    {
+      setup: 'What do you get when you cross a snowman and a dog?',
+      punchline: 'Frostbite!',
+    },
+  ];
+  return jokes[Math.floor(Math.random() * jokes.length)];
+}
+
+function generateRandomFact() {
+  const facts = [
+    'Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible.',
+    'A group of flamingos is called a flamboyance.',
+    'The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes.',
+  ];
+  return facts[Math.floor(Math.random() * facts.length)];
+}
+
+function calculateExpression(expression) {
+  try {
+    const result = eval(expression);
+    return `Result: ${result}`;
+  } catch (error) {
+    return 'Error: Invalid expression';
+  }
+}
+
+function getQuoteOfTheDay() {
+  // Define your fixed QOTD here
+  return 'Lifes simple. You make choices and you dont look back.';
+}
+
+function getSourceInfo() {
+  // Define the source information
+  return 'Source Code : https://github.com/PenguinHubLearning/PenguinAPI-Source';
+}
+
+function getAvailableEndpoints() {
+  // Define the list of available endpoints
+  const endpoints = [
+    '/fact',
+    '/joke',
+    '/trivia',
+    '/calculate',
+    '/qotd',
+    '/source',
+    '/endpoints',
+  ];
+  return JSON.stringify(endpoints);
+}
+
+function getWeatherInfo() {
+  // Replace with a function to fetch weather information
+  return 'Weather information will be provided here.';
+}
+
+function getTimeInfo() {
+  // Replace with a function to fetch time information
+  return 'Time information will be provided here.';
+}
+
+async function handleRequest(request) {
+  const { pathname, searchParams } = new URL(request.url);
+
+  if (pathname === '/fact') {
+    return new Response(JSON.stringify(generateRandomFact()), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } else if (pathname === '/joke') {
+    return new Response(JSON.stringify(generateRandomJoke()), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } else if (pathname === '/trivia') {
+    return new Response(JSON.stringify(generateRandomTrivia()), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } else if (pathname === '/calculate') {
+    const expression = searchParams.get('expression');
+    if (expression) {
+      return new Response(calculateExpression(expression), {
+        headers: { 'Content-Type': 'text/plain' },
+      });
+    } else {
+      return new Response('Error: Missing expression', {
+        headers: { 'Content-Type': 'text/plain' },
+      });
+    }
+  } else if (pathname === '/qotd') {
+    const qotd = getQuoteOfTheDay();
+    return new Response(qotd, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  } else if (pathname === '/source') {
+    const sourceInfo = getSourceInfo();
+    return new Response(sourceInfo, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  } else if (pathname === '/endpoints') {
+    const availableEndpoints = getAvailableEndpoints();
+    return new Response(availableEndpoints, {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } else if (pathname === '/weather') {
+    const weatherInfo = getWeatherInfo();
+    return new Response(weatherInfo, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  } else if (pathname === '/time') {
+    const timeInfo = getTimeInfo();
+    return new Response(timeInfo, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  } else {
+    return new Response('Invalid endpoint.', {
+      headers: { 'Content-Type': 'text/plain' },
+    });
+  }
+}
